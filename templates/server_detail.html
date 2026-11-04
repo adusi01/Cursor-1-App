@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}{{ server.name }} · Server monitor{% endblock %}
+
+{% block head %}
+  <meta http-equiv="refresh" content="5">
+{% endblock %}
+
+{% block content %}
+  <div class="page-head">
+    <div>
+      <h1>{{ server.name }}</h1>
+      <p class="lede">{{ server.host }} · SSH port {{ server.port }} · {{ server.user }}</p>
+    </div>
+    <a class="button" href="{{ url_for('server_list') }}">All servers</a>
+  </div>
+  <p class="hint">Status: {{ server.status }}. This page refreshes about every 5 seconds.</p>
+  {% if server.high_cpu or server.high_memory %}
+    <p>
+      {% if server.high_cpu %}<span class="pill warn">High CPU</span>{% endif %}
+      {% if server.high_memory %}<span class="pill warn">High memory</span>{% endif %}
+    </p>
+  {% endif %}
+  <section class="stats">
+    <article class="stat">
+      <span>CPU</span>
+      <strong>{{ server.cpu }}</strong>
+    </article>
+    <article class="stat">
+      <span>Memory</span>
+      <strong>{{ server.memory }}</strong>
+    </article>
+    <article class="stat">
+      <span>Network in</span>
+      <strong>{{ server.net_in }}</strong>
+    </article>
+    <article class="stat">
+      <span>Network out</span>
+      <strong>{{ server.net_out }}</strong>
+    </article>
+  </section>
+  <section class="card">
+    <h2>Charts</h2>
+    {% if server.cpu_points %}
+      <div class="charts">
+        <div>
+          <strong>CPU</strong>
+          <svg class="chart" viewBox="0 0 280 80" role="img" aria-label="CPU chart"><polyline points="{{ server.cpu_points }}"></polyline></svg>
+        </div>
+        <div>
+          <strong>Memory</strong>
+          <svg class="chart" viewBox="0 0 280 80" role="img" aria-label="Memory chart"><polyline points="{{ server.memory_points }}"></polyline></svg>
+        </div>
+        <div>
+          <strong>Network</strong>
+          <svg class="chart" viewBox="0 0 280 80" role="img" aria-label="Network chart"><polyline points="{{ server.net_points }}"></polyline></svg>
+        </div>
+      </div>
+    {% else %}
+      <p class="hint">Charts appear after the first successful check. They stay in memory and reset when the app stops.</p>
+    {% endif %}
+  </section>
+  <section class="card">
+    <h2>Listening ports</h2>
+    {% if server.ports %}
+      <table>
+        <thead>
+          <tr>
+            <th>Bind address</th>
+            <th>Port</th>
+            <th>Process</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for port in server.ports %}
+            <tr>
+              <td>{{ port.address }}</td>
+              <td>{{ port.port }}</td>
+              <td>{{ port.process or "—" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="hint">No listening ports were reported.</p>
+    {% endif %}
+  </section>
+{% endblock %}

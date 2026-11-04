@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Add server · Server monitor{% endblock %}
+
+{% block content %}
+  <div class="page-head">
+    <div>
+      <h1>Add server</h1>
+      <p class="lede">Register this Linux machine. Use a private key, an SSH password, or both.</p>
+    </div>
+  </div>
+  {% if error %}
+    <p class="note">{{ error }}</p>
+  {% endif %}
+  <section class="card">
+    <form action="{{ url_for('add_server') }}" method="post">
+      <label>
+        Display name
+        <input type="text" name="name" value="{{ form.name }}" required maxlength="80">
+      </label>
+      <label>
+        SSH host
+        <input type="text" name="host" value="{{ form.host }}" required>
+      </label>
+      <label>
+        SSH port
+        <input type="text" name="port" value="{{ form.port }}" inputmode="numeric" required>
+      </label>
+      <label>
+        SSH user
+        <input type="text" name="user" value="{{ form.user }}" autocomplete="username" required>
+      </label>
+      <label>
+        Private key path
+        <input type="text" name="key_path" value="{{ form.key_path }}" autocomplete="off">
+      </label>
+      <label>
+        SSH password
+        <input type="password" name="ssh_password" autocomplete="new-password">
+      </label>
+      <p class="hint">The password is saved with the registration and is not shown again.</p>
+      <div class="actions">
+        <button type="submit">Save server</button>
+        <a href="{{ url_for('server_list') }}">Back to servers</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

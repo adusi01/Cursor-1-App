@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Server monitor{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('server_list') }}">Server monitor</a>
+    <nav>
+      {% if session.signed_in %}
+        <a href="{{ url_for('server_list') }}" {% if page == "servers" %}aria-current="page"{% endif %}>Servers</a>
+        <a href="{{ url_for('add_server_form') }}" {% if page == "add_server" %}aria-current="page"{% endif %}>Add server</a>
+        <form action="{{ url_for('sign_out') }}" method="post">
+          <button type="submit">Sign out</button>
+        </form>
+      {% else %}
+        <a href="{{ url_for('sign_in') }}" {% if page == "sign_in" %}aria-current="page"{% endif %}>Sign in</a>
+      {% endif %}
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

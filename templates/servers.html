@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Servers · Server monitor{% endblock %}
+
+{% block content %}
+  <div class="page-head">
+    <div>
+      <h1>Servers</h1>
+      <p class="lede">Linux hosts registered for this demo.</p>
+    </div>
+    <a class="button" href="{{ url_for('add_server_form') }}">Add server</a>
+  </div>
+  {% if saved %}
+    <section class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Host</th>
+            <th>Status</th>
+            <th>CPU</th>
+            <th>Memory</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for server in saved %}
+            <tr>
+              <td>{{ server.name }}</td>
+              <td>{{ server.host }}</td>
+              <td>
+                <span class="pill {% if server.error %}bad{% endif %}">{{ server.status }}</span>
+                {% if server.high_cpu %}<span class="pill warn">High CPU</span>{% endif %}
+                {% if server.high_memory %}<span class="pill warn">High memory</span>{% endif %}
+              </td>
+              <td>{{ server.cpu }}</td>
+              <td>{{ server.memory }}</td>
+              <td><a href="{{ url_for('server_detail', server_id=server.id) }}">View</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  {% else %}
+    <section class="card">
+      <p>No servers yet. <a href="{{ url_for('add_server_form') }}">Add server</a>.</p>
+    </section>
+  {% endif %}
+{% endblock %}
